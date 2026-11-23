@@ -1,5 +1,18 @@
 # Grokbot progress
 
+## P06 — Prepare a reproducible open-source release
+
+- **Phase and status:** P06 PASS
+- **Files changed:** `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `.github/workflows/ci.yml`, `package.json`
+- **Commands and results:**
+  - Clean copy at `/tmp/modelshift-clean` with `npm ci` then `npm run demo` → demo passed. Blocked report decision `block`, exit 1, field `order_id`. Clean report decision `pass`, exit 0. `npm audit` in that tree reported 0 vulnerabilities.
+  - `npm pack --dry-run` → `modelshift-0.1.0.tgz`, 95 files, includes `dist/cli.js`, `fixtures/`, `README.md`, and `LICENSE`. It does not include `node_modules/` or `reports/`.
+  - A search of tracked text for private keys, cloud tokens, and embedded credentials found none.
+  - GitHub Actions workflow `.github/workflows/ci.yml` uses contents: read and pins checkout `3d3c42e5aac5ba805825da76410c181273ba90b1` (v7.0.1), setup-node `949feb2413d6458794dcd2491c4babbbce0c15c1` (v7.1.0), and upload-artifact `cf430e030ddbb5b0abf93d22962f4752f3646cd9` (v7.0.2). It runs `npm ci`, format, typecheck, test, and demo with no secrets. Hosted execution is P07.
+- **Artifact paths:** `.github/workflows/ci.yml`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`
+- **Open issues:** The workflow has not yet run on GitHub.
+- **Next phase:** P07 — publish and verify on GitHub.
+
 ## P05 — Verify correctness, security, and performance
 
 - **Phase and status:** P05 PASS

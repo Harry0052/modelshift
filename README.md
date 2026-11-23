@@ -8,13 +8,18 @@ Money in the sample suite is integer cents. Case counts are exact. A timeout or 
 
 - Node.js 22 or newer
 - npm 10 or newer
+- A normal developer machine. There is no GPU, hosted-model, or real-customer-data demo.
+
+The commands below are the supported path on Linux, macOS, and Windows.
 
 ## Install
 
 ```bash
 npm ci
-npm run build
+npm run demo
 ```
+
+`npm run demo` builds the CLI, writes both reports, and checks them against the oracle. `npm test` runs the same build plus the Vitest suite.
 
 ## Demo
 
@@ -83,4 +88,12 @@ The sample cases are original and hand-authored. Terms and checksums are in `fix
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). The sample fixtures are original, MIT-licensed examples. Their checksums and terms are in [fixtures/FIXTURE-MANIFEST.json](fixtures/FIXTURE-MANIFEST.json). Direct dependencies are Ajv (MIT), TypeScript (Apache-2.0), Vitest (MIT), and Prettier (MIT).
+
+## Changes
+
+See [CHANGELOG.md](CHANGELOG.md). Version 0.1.0 is the first offline release gate.
+
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Report vulnerabilities through GitHub private vulnerability reporting.
