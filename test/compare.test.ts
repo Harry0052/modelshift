@@ -102,6 +102,20 @@ describe("compare CLI", () => {
     rmSync(out, { recursive: true, force: true });
   });
 
+  it("keeps JSON stdout free of the report-path diagnostic", () => {
+    const out = mkdtempSync(path.join(tmpdir(), "modelshift-json-"));
+    const result = runCli(["compare", "--manifest", manifest, "--out", out, "--format", "json"]);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/^report:/);
+    expect(result.stdout).not.toContain("report:");
+    const report = JSON.parse(result.stdout) as { decision: string; recovery: string; units: string };
+    expect(report.decision).toBe("block");
+    expect(report.recovery).toMatch(/Do not ship/);
+    expect(report.units).toMatch(/integer cents/);
+    expect(readFileSync(path.join(out, "ci.txt"), "utf8")).toContain("decision=block");
+    rmSync(out, { recursive: true, force: true });
+  });
+
   it("passes the clean candidate from the public entry point", () => {
     const out = mkdtempSync(path.join(tmpdir(), "modelshift-clean-"));
     const result = runCli([

@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type { CaseEvidence, GateReport } from "./evaluate.js";
 import { GateError } from "./errors.js";
@@ -9,10 +9,21 @@ export function writeReport(report: GateReport, outDir: string): { jsonPath: str
   const jsonPath = path.join(resolved, "gate.json");
   const textPath = path.join(resolved, "summary.txt");
   const htmlPath = path.join(resolved, "gate.html");
+  const ciPath = path.join(resolved, "ci.txt");
   const summary = renderSummary(report);
+  const ci = renderCiSummary(report);
   writeFileSync(jsonPath, `${JSON.stringify(report, null, 2)}\n`);
   writeFileSync(textPath, summary);
   writeFileSync(htmlPath, renderHtml(summary));
+  writeFileSync(ciPath, ci);
+  const stepSummary = process.env.GITHUB_STEP_SUMMARY;
+  if (stepSummary) {
+    try {
+      appendFileSync(stepSummary, ci);
+    } catch {
+      // The report files are the supported export. A missing Actions summary file is not a gate failure.
+    }
+  }
   return { jsonPath, textPath, htmlPath };
 }
 
@@ -25,6 +36,9 @@ export function renderSummary(report: GateReport): string {
     `baseline: ${report.baselineVersion || "(unavailable)"}`,
     `candidate: ${report.candidateVersion || "(unavailable)"}`,
     `retries configured: ${report.retriesConfigured}`,
+    `units: ${report.units}`,
+    `limitations: ${report.limitations}`,
+    `recovery: ${report.recovery}`,
     `critical regressions: ${report.criticalRegressions.length}`,
     `counts: passing ${report.counts.passing}, newly failing ${report.counts.newlyFailing}, fixed ${report.counts.fixed}, continuously failing ${report.counts.continuouslyFailing}, inconclusive ${report.counts.inconclusive}, quarantined ${report.counts.quarantined}`,
   ];
@@ -50,11 +64,23 @@ export function renderSummary(report: GateReport): string {
   return lines.join("\n");
 }
 
+export function renderCiSummary(report: GateReport): string {
+  const fields = report.criticalRegressions
+    .map((item) => `${item.workflowId}/${item.caseId}:${item.fields.join(",")}`)
+    .join(" ");
+  return [
+    `modelshift decision=${report.decision} exit=${report.exitCode} critical_regressions=${report.criticalRegressions.length}${fields ? ` cases=${fields}` : ""}`,
+    "",
+  ].join("\n");
+}
+
 function renderCase(item: CaseEvidence): string {
   const lines = [
     `- ${item.workflowId}/${item.caseId} ${item.severity} ${item.outcome}${item.flaky ? " flaky" : ""}`,
     `  reason: ${item.reason}`,
+    `  recovery: ${item.recovery}`,
     `  config: ${item.configHash}`,
+    `  input sha256: ${item.inputSha256}`,
     `  baseline version: ${item.baseline.modelVersion ?? "(missing)"} status ${item.baseline.status} attempts ${item.baseline.attempts.length}`,
     `  candidate version: ${item.candidate.modelVersion ?? "(missing)"} status ${item.candidate.status} attempts ${item.candidate.attempts.length}`,
     `  retries configured: ${item.retriesConfigured}`,

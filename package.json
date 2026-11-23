@@ -24,7 +24,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && vitest run",
     "validate": "npm run build && node dist/cli.js validate --manifest fixtures/valid/suite.manifest.json",
-    "validate:invalid": "npm run build && node dist/cli.js validate --manifest fixtures/invalid/suite.manifest.json"
+    "validate:invalid": "npm run build && node dist/cli.js validate --manifest fixtures/invalid/suite.manifest.json",
+    "demo": "npm run build && node scripts/demo.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0"

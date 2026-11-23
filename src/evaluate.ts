@@ -40,6 +40,7 @@ export type CaseEvidence = {
   outcome: PairOutcome;
   flaky: boolean;
   reason: string;
+  recovery: string;
   retriesConfigured: number;
   baseline: SideEvidence;
   candidate: SideEvidence;
@@ -59,6 +60,9 @@ export type GateReport = {
   baselineVersion: string;
   candidateVersion: string;
   retriesConfigured: number;
+  units: string;
+  limitations: string;
+  recovery: string;
   criticalRegressions: Array<{
     workflowId: string;
     caseId: string;
@@ -128,6 +132,10 @@ export function evaluateSuite(suite: LoadedSuite): GateReport {
     baselineVersion: suite.manifest.baselineVersion,
     candidateVersion: suite.manifest.candidateVersion,
     retriesConfigured: suite.manifest.retries,
+    units: "Money is integer cents. Counts are cases. Contract comparisons are exact.",
+    limitations:
+      "The gate reads recorded outputs, or the explicit local provider. It does not call a hosted model, grade prose, or run tools.",
+    recovery: suiteRecovery(decision),
     criticalRegressions,
     counts: countOutcomes(cases),
     reasons: [],
@@ -146,6 +154,10 @@ function quarantinedReport(manifestPath: string, reasons: string[]): GateReport 
     baselineVersion: "",
     candidateVersion: "",
     retriesConfigured: 0,
+    units: "Money is integer cents. Counts are cases. Contract comparisons are exact.",
+    limitations:
+      "The gate reads recorded outputs, or the explicit local provider. It does not call a hosted model, grade prose, or run tools.",
+    recovery: suiteRecovery("quarantined"),
     criticalRegressions: [],
     counts: {
       passing: 0,
@@ -176,6 +188,7 @@ function evaluateCase(suite: LoadedSuite, item: LoadedCase): CaseEvidence {
     outcome: classified.outcome,
     flaky,
     reason,
+    recovery: caseRecovery(classified.outcome, item.spec.severity),
     retriesConfigured: suite.manifest.retries,
     baseline: sideEvidence(item.baseline, baseline, suite.manifest.redactions),
     candidate: sideEvidence(item.candidate, candidate, suite.manifest.redactions),
@@ -240,6 +253,31 @@ function failedMissing(): ContractResult {
 
 function strip(attempts: Array<AttemptEvidence & { result?: ContractResult }>): AttemptEvidence[] {
   return attempts.map(({ attempt, status, contract }) => ({ attempt, status, contract }));
+}
+
+function suiteRecovery(decision: GateReport["decision"]): string {
+  if (decision === "block") {
+    return "Do not ship this candidate. Inspect each newly failing critical field, then compare again. Fixed and continuously failing cases are not new regressions.";
+  }
+  if (decision === "insufficient_evidence") {
+    return "Add a completed recording for every critical case and compare again. A timeout or missing file is not a behavior regression.";
+  }
+  if (decision === "quarantined") {
+    return "Restore the input bytes or review the version pin before comparing. A hash or version mismatch is not a model regression.";
+  }
+  return "Critical coverage is complete and no critical contract newly failed. Review fixed and continuously failing cases before depending on them.";
+}
+
+function caseRecovery(outcome: PairOutcome, severity: Severity): string {
+  if (outcome === "newly_failing" && severity === "critical") {
+    return "This critical field blocks the release. Fix the candidate output or keep the pinned baseline.";
+  }
+  if (outcome === "newly_failing") return "This field changed. It does not block the release unless you raise its severity.";
+  if (outcome === "inconclusive") return "Collect another completed attempt. Do not count this case as a pass or a regression.";
+  if (outcome === "quarantined") return "Re-pin the input hash or model version in a reviewed manifest change.";
+  if (outcome === "fixed") return "The candidate now meets the contract. This is not a new regression.";
+  if (outcome === "continuously_failing") return "Both versions miss this contract. It is a known gap, not a new regression.";
+  return "No action. Both sides meet the contract.";
 }
 
 function specificReason(fallback: string, baseline: EvaluatedSide, candidate: EvaluatedSide, retries: number): string {

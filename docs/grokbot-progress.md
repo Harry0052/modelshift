@@ -1,5 +1,19 @@
 # Grokbot progress
 
+## P04 — Ship the user workflow and reports
+
+- **Phase and status:** P04 PASS
+- **Files changed:** `README.md`, `package.json`, `scripts/demo.mjs`, `src/evaluate.ts`, `src/report.ts`, `test/compare.test.ts`
+- **Commands and results:**
+  - `npm test` → 17 tests passed.
+  - `npm run demo` → exit 0. Blocked report `reports/candidate-bad/gate.json` (decision `block`, order_id). Clean report `reports/candidate-clean/gate.json` (decision `pass`). HTML export contains `&lt;script&gt;`.
+  - `node dist/cli.js compare --manifest fixtures/invalid/suite.manifest.json --out /tmp/modelshift-invalid-out` → exit 2. Stderr names missing `baselineVersion`, missing `inputSha256`, rejected severity, and empty assertions. No gate decision on stdout.
+  - `node dist/cli.js --help` lists validate, compare, run, and exit codes 0, 1, 2, and 3.
+  - `--format json` keeps the JSON document on stdout and the `report:` path on stderr.
+- **Artifact paths:** `reports/candidate-bad/gate.json`, `reports/candidate-bad/summary.txt`, `reports/candidate-bad/gate.html`, `reports/candidate-bad/ci.txt`, `reports/candidate-clean/gate.json`
+- **Open issues:** Formatter, performance budget, and the validation write-up are P05. Hosted CI is P07.
+- **Next phase:** P05 — verify correctness, security, and performance.
+
 ## P03 — Build the working core
 
 - **Phase and status:** P03 PASS
