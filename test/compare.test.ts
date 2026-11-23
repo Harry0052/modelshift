@@ -1,5 +1,13 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -10,7 +18,10 @@ const cli = path.resolve("dist/cli.js");
 
 function runCli(args: string[]): { status: number; stdout: string; stderr: string } {
   try {
-    const stdout = execFileSync(process.execPath, [cli, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    const stdout = execFileSync(process.execPath, [cli, ...args], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     return { status: 0, stdout, stderr: "" };
   } catch (error) {
     const failure = error as { status: number; stdout: string; stderr: string };
@@ -40,7 +51,9 @@ describe("recorded suite gate", () => {
     expect(byId["refund-reason"]?.outcome).toBe("fixed");
     expect(byId["address-normalize"]?.outcome).toBe("continuously_failing");
     expect(byId["invoice-status"]?.outcome).toBe("inconclusive");
-    expect(byId["invoice-status"]?.reason).toBe("candidate timeout after 2 attempts; retries configured 1");
+    expect(byId["invoice-status"]?.reason).toBe(
+      "candidate timeout after 2 attempts; retries configured 1",
+    );
     expect(byId["tax-total"]?.outcome).toBe("passing");
     expect(JSON.stringify(report)).not.toContain("ada@example.com");
     expect(JSON.stringify(report)).toContain("[redacted]");
@@ -55,7 +68,9 @@ describe("recorded suite gate", () => {
     expect(critical).toHaveLength(2);
     expect(critical.every((item) => item.outcome === "passing")).toBe(true);
     expect(report.cases.find((item) => item.caseId === "refund-reason")?.outcome).toBe("fixed");
-    expect(report.cases.find((item) => item.caseId === "address-normalize")?.outcome).toBe("continuously_failing");
+    expect(report.cases.find((item) => item.caseId === "address-normalize")?.outcome).toBe(
+      "continuously_failing",
+    );
   });
 
   it("repeats the same gate bytes", () => {
@@ -93,7 +108,9 @@ describe("compare CLI", () => {
     expect(result.stdout).toContain("decision: block");
     expect(result.stdout).toContain("field order_id pattern");
     expect(result.stderr).toContain("report:");
-    const report = JSON.parse(readFileSync(path.join(out, "gate.json"), "utf8")) as { decision: string };
+    const report = JSON.parse(readFileSync(path.join(out, "gate.json"), "utf8")) as {
+      decision: string;
+    };
     expect(report.decision).toBe("block");
     const html = readFileSync(path.join(out, "gate.html"), "utf8");
     expect(html).toContain("&lt;script&gt;");
@@ -108,7 +125,11 @@ describe("compare CLI", () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toMatch(/^report:/);
     expect(result.stdout).not.toContain("report:");
-    const report = JSON.parse(result.stdout) as { decision: string; recovery: string; units: string };
+    const report = JSON.parse(result.stdout) as {
+      decision: string;
+      recovery: string;
+      units: string;
+    };
     expect(report.decision).toBe("block");
     expect(report.recovery).toMatch(/Do not ship/);
     expect(report.units).toMatch(/integer cents/);
@@ -139,7 +160,13 @@ describe("quarantine and evidence", () => {
     const input = path.join(dir, "inputs/order-extract.json");
     writeFileSync(input, readFileSync(input, "utf8").replace("2 widgets", "3 widgets"));
     const out = path.join(dir, "out");
-    const result = runCli(["compare", "--manifest", path.join(dir, "suite.manifest.json"), "--out", out]);
+    const result = runCli([
+      "compare",
+      "--manifest",
+      path.join(dir, "suite.manifest.json"),
+      "--out",
+      out,
+    ]);
     expect(result.status).toBe(3);
     const report = JSON.parse(readFileSync(path.join(out, "gate.json"), "utf8")) as {
       decision: string;
@@ -155,9 +182,18 @@ describe("quarantine and evidence", () => {
 
   it("rejects an output schema that uses a remote ref", () => {
     const dir = copySuite();
-    writeFileSync(path.join(dir, "schemas/order.schema.json"), '{"$ref":"https://example.invalid/order"}\n');
+    writeFileSync(
+      path.join(dir, "schemas/order.schema.json"),
+      '{"$ref":"https://example.invalid/order"}\n',
+    );
     const out = path.join(dir, "out");
-    const result = runCli(["compare", "--manifest", path.join(dir, "suite.manifest.json"), "--out", out]);
+    const result = runCli([
+      "compare",
+      "--manifest",
+      path.join(dir, "suite.manifest.json"),
+      "--out",
+      out,
+    ]);
     expect(result.status).toBe(2);
     expect(result.stderr).toMatch(/must not use \$ref/);
     rmSync(dir, { recursive: true, force: true });
@@ -189,7 +225,12 @@ describe("quarantine and evidence", () => {
     expect(result.status).toBe(3);
     const report = JSON.parse(readFileSync(path.join(out, "gate.json"), "utf8")) as {
       criticalRegressions: unknown[];
-      cases: Array<{ caseId: string; outcome: string; flaky: boolean; candidate: { attempts: unknown[] } }>;
+      cases: Array<{
+        caseId: string;
+        outcome: string;
+        flaky: boolean;
+        candidate: { attempts: unknown[] };
+      }>;
     };
     const order = report.cases.find((item) => item.caseId === "order-extract");
     expect(order).toMatchObject({ outcome: "inconclusive", flaky: true });

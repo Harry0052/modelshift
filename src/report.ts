@@ -3,7 +3,10 @@ import path from "node:path";
 import type { CaseEvidence, GateReport } from "./evaluate.js";
 import { GateError } from "./errors.js";
 
-export function writeReport(report: GateReport, outDir: string): { jsonPath: string; textPath: string; htmlPath: string } {
+export function writeReport(
+  report: GateReport,
+  outDir: string,
+): { jsonPath: string; textPath: string; htmlPath: string } {
   const resolved = path.resolve(outDir);
   mkdirSync(resolved, { recursive: true });
   const jsonPath = path.join(resolved, "gate.json");
@@ -90,11 +93,15 @@ function renderCase(item: CaseEvidence): string {
   ];
   const failures = item.outcome === "fixed" ? item.baseline.failures : item.candidate.failures;
   for (const failure of failures) {
-    lines.push(`  field ${failure.field} ${failure.assertion}: expected ${failure.expected}; actual ${failure.actual}`);
+    lines.push(
+      `  field ${failure.field} ${failure.assertion}: expected ${failure.expected}; actual ${failure.actual}`,
+    );
   }
   if (item.outcome === "newly_failing") {
     for (const failure of item.baseline.failures) {
-      lines.push(`  baseline field ${failure.field} ${failure.assertion}: expected ${failure.expected}; actual ${failure.actual}`);
+      lines.push(
+        `  baseline field ${failure.field} ${failure.assertion}: expected ${failure.expected}; actual ${failure.actual}`,
+      );
     }
   }
   return lines.join("\n");

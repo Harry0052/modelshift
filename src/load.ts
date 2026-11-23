@@ -1,9 +1,15 @@
-import { readFileSync } from "node:fs";
+import { lstatSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { Ajv, type ErrorObject, type ValidateFunction } from "ajv";
 import { canonicalStringify, sha256 } from "./canonical.js";
 import { GateError } from "./errors.js";
-import { findLongString, jsonDepth, MAX_INPUT_BYTES, MAX_JSON_DEPTH, MAX_STRING_LENGTH } from "./limits.js";
+import {
+  findLongString,
+  jsonDepth,
+  MAX_INPUT_BYTES,
+  MAX_JSON_DEPTH,
+  MAX_STRING_LENGTH,
+} from "./limits.js";
 import { isSafePattern, resolveInside } from "./paths.js";
 import { manifestSchema, recordingSchema } from "./schemas.js";
 import type { Assertion, LoadedCase, LoadedSuite, Recording, SuiteManifest } from "./types.js";
@@ -50,13 +56,25 @@ export function loadSuite(manifestPath: string, options: LoadOptions = {}): Load
   return { manifestPath: absoluteManifest, rootDir, manifest, cases };
 }
 
-function loadCase(rootDir: string, manifest: SuiteManifest, spec: SuiteManifest["cases"][number]): LoadedCase {
+function loadCase(
+  rootDir: string,
+  manifest: SuiteManifest,
+  spec: SuiteManifest["cases"][number],
+): LoadedCase {
   const label = `${spec.workflowId}/${spec.caseId}`;
   assertAssertions(label, spec.assertions);
   const inputPath = resolveSuitePath(rootDir, spec.input, label);
   const schemaPath = resolveSuitePath(rootDir, spec.outputSchema, label);
-  const baselinePath = resolveSuitePath(rootDir, path.posix.join(manifest.baselineDir, spec.recording), label);
-  const candidatePath = resolveSuitePath(rootDir, path.posix.join(manifest.candidateDir, spec.recording), label);
+  const baselinePath = resolveSuitePath(
+    rootDir,
+    path.posix.join(manifest.baselineDir, spec.recording),
+    label,
+  );
+  const candidatePath = resolveSuitePath(
+    rootDir,
+    path.posix.join(manifest.candidateDir, spec.recording),
+    label,
+  );
 
   const inputBytes = readBytes(inputPath, label, "input");
   if (inputBytes.length > MAX_INPUT_BYTES) {
@@ -79,7 +97,13 @@ function loadCase(rootDir: string, manifest: SuiteManifest, spec: SuiteManifest[
   assertOutputSchema(label, schema);
 
   const baseline = readRecording(baselinePath, spec, manifest.baselineVersion, label, "baseline");
-  const candidate = readRecording(candidatePath, spec, manifest.candidateVersion, label, "candidate");
+  const candidate = readRecording(
+    candidatePath,
+    spec,
+    manifest.candidateVersion,
+    label,
+    "candidate",
+  );
   const configHash = sha256(
     canonicalStringify({
       caseId: spec.caseId,
@@ -112,10 +136,14 @@ function loadCase(rootDir: string, manifest: SuiteManifest, spec: SuiteManifest[
 function assertAssertions(label: string, assertions: Assertion[]): void {
   for (const assertion of assertions) {
     if (assertion.type === "exact" && !Object.prototype.hasOwnProperty.call(assertion, "value")) {
-      throw new GateError(2, "invalid_config", [`${label} exact assertion ${assertion.path} requires value`]);
+      throw new GateError(2, "invalid_config", [
+        `${label} exact assertion ${assertion.path} requires value`,
+      ]);
     }
     if (assertion.type === "enum" && (!assertion.values || assertion.values.length === 0)) {
-      throw new GateError(2, "invalid_config", [`${label} enum assertion ${assertion.path} requires values`]);
+      throw new GateError(2, "invalid_config", [
+        `${label} enum assertion ${assertion.path} requires values`,
+      ]);
     }
     if (assertion.type === "pattern") {
       if (!assertion.pattern || !isSafePattern(assertion.pattern)) {
@@ -125,7 +153,9 @@ function assertAssertions(label: string, assertions: Assertion[]): void {
       }
     }
     if (assertion.type === "maxLength" && assertion.max === undefined) {
-      throw new GateError(2, "invalid_config", [`${label} maxLength assertion ${assertion.path} requires max`]);
+      throw new GateError(2, "invalid_config", [
+        `${label} maxLength assertion ${assertion.path} requires max`,
+      ]);
     }
   }
 }
@@ -178,8 +208,14 @@ function readRecording(
       assertBounded(`${label} ${side} attempt ${attempt.attempt}`, attempt.output);
     }
   });
-  if (recording.status === "completed" && recording.output === undefined && attempts.some((item) => item.output === undefined)) {
-    throw new GateError(2, "invalid_config", [`${label} ${side} completed recording is missing output`]);
+  if (
+    recording.status === "completed" &&
+    recording.output === undefined &&
+    attempts.some((item) => item.output === undefined)
+  ) {
+    throw new GateError(2, "invalid_config", [
+      `${label} ${side} completed recording is missing output`,
+    ]);
   }
   if (recording.status !== "completed" && recording.output !== undefined) {
     throw new GateError(2, "invalid_config", [
@@ -212,7 +248,9 @@ function assertOutputSchema(label: string, schema: unknown): void {
 function assertBounded(label: string, value: unknown): void {
   const depth = jsonDepth(value);
   if (depth > MAX_JSON_DEPTH) {
-    throw new GateError(2, "invalid_config", [`${label} JSON depth ${depth} exceeds ${MAX_JSON_DEPTH}`]);
+    throw new GateError(2, "invalid_config", [
+      `${label} JSON depth ${depth} exceeds ${MAX_JSON_DEPTH}`,
+    ]);
   }
   const longString = findLongString(value, MAX_STRING_LENGTH);
   if (longString) {
@@ -240,11 +278,16 @@ function readBytes(filePath: string, label: string, kind: string): Buffer {
 
 function readOptionalBytes(filePath: string): Buffer | null {
   try {
-    return readFileSync(filePath);
+    const stat = lstatSync(filePath);
+    if (stat.isSymbolicLink()) {
+      throw new GateError(2, "invalid_config", [`refusing to follow symlink ${filePath}`]);
+    }
   } catch (error) {
+    if (error instanceof GateError) throw error;
     if (isEnoent(error)) return null;
     throw new GateError(2, "invalid_config", [`cannot read ${filePath}: ${errorMessage(error)}`]);
   }
+  return readFileSync(filePath);
 }
 
 function isEnoent(error: unknown): boolean {

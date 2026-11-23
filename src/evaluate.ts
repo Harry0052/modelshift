@@ -8,12 +8,7 @@ import { toolVersion } from "./version.js";
 import type { LoadedCase, LoadedSuite, Recording, Severity } from "./types.js";
 
 export type PairOutcome =
-  | "passing"
-  | "newly_failing"
-  | "fixed"
-  | "continuously_failing"
-  | "inconclusive"
-  | "quarantined";
+  "passing" | "newly_failing" | "fixed" | "continuously_failing" | "inconclusive" | "quarantined";
 
 export type AttemptEvidence = {
   attempt: number;
@@ -111,7 +106,9 @@ export function evaluateSuite(suite: LoadedSuite): GateReport {
       fields: uniqueFields(item.candidate.failures),
     }));
   const criticalGap = cases.some(
-    (item) => item.severity === "critical" && (item.outcome === "inconclusive" || item.outcome === "quarantined"),
+    (item) =>
+      item.severity === "critical" &&
+      (item.outcome === "inconclusive" || item.outcome === "quarantined"),
   );
   let decision: GateReport["decision"] = "pass";
   let exitCode: GateReport["exitCode"] = 0;
@@ -214,10 +211,17 @@ function evaluateSide(item: LoadedCase, recording: Recording | null): EvaluatedS
   }
   const attempts = recording.attempts.map((attempt) => {
     if (attempt.status !== "completed") {
-      return { attempt: attempt.attempt, status: attempt.status, contract: "not_applicable" as const };
+      return {
+        attempt: attempt.attempt,
+        status: attempt.status,
+        contract: "not_applicable" as const,
+      };
     }
     const output = attempt.output !== undefined ? attempt.output : recording.output;
-    const result = output === undefined ? failedMissing() : checkContract(item.schema, item.spec.assertions, output);
+    const result =
+      output === undefined
+        ? failedMissing()
+        : checkContract(item.schema, item.spec.assertions, output);
     return {
       attempt: attempt.attempt,
       status: attempt.status,
@@ -244,11 +248,19 @@ function evaluateSide(item: LoadedCase, recording: Recording | null): EvaluatedS
   if (!representative || representative.passed) {
     return { state: "pass", flaky: false, failures: [], attempts: strip(attempts) };
   }
-  return { state: "fail", flaky: false, failures: representative.failures, attempts: strip(attempts) };
+  return {
+    state: "fail",
+    flaky: false,
+    failures: representative.failures,
+    attempts: strip(attempts),
+  };
 }
 
 function failedMissing(): ContractResult {
-  return { passed: false, failures: [{ field: "(root)", assertion: "schema", expected: "output", actual: "(missing)" }] };
+  return {
+    passed: false,
+    failures: [{ field: "(root)", assertion: "schema", expected: "output", actual: "(missing)" }],
+  };
 }
 
 function strip(attempts: Array<AttemptEvidence & { result?: ContractResult }>): AttemptEvidence[] {
@@ -272,15 +284,25 @@ function caseRecovery(outcome: PairOutcome, severity: Severity): string {
   if (outcome === "newly_failing" && severity === "critical") {
     return "This critical field blocks the release. Fix the candidate output or keep the pinned baseline.";
   }
-  if (outcome === "newly_failing") return "This field changed. It does not block the release unless you raise its severity.";
-  if (outcome === "inconclusive") return "Collect another completed attempt. Do not count this case as a pass or a regression.";
-  if (outcome === "quarantined") return "Re-pin the input hash or model version in a reviewed manifest change.";
-  if (outcome === "fixed") return "The candidate now meets the contract. This is not a new regression.";
-  if (outcome === "continuously_failing") return "Both versions miss this contract. It is a known gap, not a new regression.";
+  if (outcome === "newly_failing")
+    return "This field changed. It does not block the release unless you raise its severity.";
+  if (outcome === "inconclusive")
+    return "Collect another completed attempt. Do not count this case as a pass or a regression.";
+  if (outcome === "quarantined")
+    return "Re-pin the input hash or model version in a reviewed manifest change.";
+  if (outcome === "fixed")
+    return "The candidate now meets the contract. This is not a new regression.";
+  if (outcome === "continuously_failing")
+    return "Both versions miss this contract. It is a known gap, not a new regression.";
   return "No action. Both sides meet the contract.";
 }
 
-function specificReason(fallback: string, baseline: EvaluatedSide, candidate: EvaluatedSide, retries: number): string {
+function specificReason(
+  fallback: string,
+  baseline: EvaluatedSide,
+  candidate: EvaluatedSide,
+  retries: number,
+): string {
   if (candidate.state === "timeout") {
     return `candidate timeout after ${candidate.attempts.length} attempts; retries configured ${retries}`;
   }
@@ -292,25 +314,52 @@ function specificReason(fallback: string, baseline: EvaluatedSide, candidate: Ev
   return fallback;
 }
 
-function classify(baseline: SideState, candidate: SideState, flaky: boolean): { outcome: PairOutcome; reason: string } {
-  if (flaky) return { outcome: "inconclusive", reason: "attempts disagreed; flaky result is not a behavior regression" };
+function classify(
+  baseline: SideState,
+  candidate: SideState,
+  flaky: boolean,
+): { outcome: PairOutcome; reason: string } {
+  if (flaky)
+    return {
+      outcome: "inconclusive",
+      reason: "attempts disagreed; flaky result is not a behavior regression",
+    };
   if (baseline === "missing" || candidate === "missing") {
     return { outcome: "inconclusive", reason: "recording is missing" };
   }
   if (baseline === "timeout" || candidate === "timeout") {
-    return { outcome: "inconclusive", reason: "timeout is insufficient evidence, not a behavior regression" };
+    return {
+      outcome: "inconclusive",
+      reason: "timeout is insufficient evidence, not a behavior regression",
+    };
   }
   if (baseline === "error" || candidate === "error") {
-    return { outcome: "inconclusive", reason: "provider or setup error is not a behavior regression" };
+    return {
+      outcome: "inconclusive",
+      reason: "provider or setup error is not a behavior regression",
+    };
   }
-  if (baseline === "pass" && candidate === "pass") return { outcome: "passing", reason: "both sides meet the contract" };
-  if (baseline === "pass" && candidate === "fail") return { outcome: "newly_failing", reason: "candidate failed a contract the baseline met" };
-  if (baseline === "fail" && candidate === "pass") return { outcome: "fixed", reason: "candidate meets a contract the baseline missed" };
-  return { outcome: "continuously_failing", reason: "both sides miss the contract; this is not a new regression" };
+  if (baseline === "pass" && candidate === "pass")
+    return { outcome: "passing", reason: "both sides meet the contract" };
+  if (baseline === "pass" && candidate === "fail")
+    return { outcome: "newly_failing", reason: "candidate failed a contract the baseline met" };
+  if (baseline === "fail" && candidate === "pass")
+    return { outcome: "fixed", reason: "candidate meets a contract the baseline missed" };
+  return {
+    outcome: "continuously_failing",
+    reason: "both sides miss the contract; this is not a new regression",
+  };
 }
 
-function sideEvidence(recording: Recording | null, evaluated: EvaluatedSide, redactions: string[]): SideEvidence {
-  const output = recording?.status === "completed" ? redactValue(representativeOutput(recording), redactions) : null;
+function sideEvidence(
+  recording: Recording | null,
+  evaluated: EvaluatedSide,
+  redactions: string[],
+): SideEvidence {
+  const output =
+    recording?.status === "completed"
+      ? redactValue(representativeOutput(recording), redactions)
+      : null;
   return {
     present: recording !== null,
     modelVersion: recording?.modelVersion ?? null,

@@ -21,7 +21,9 @@ export function applyLocalProvider(suite: LoadedSuite, tablePath: string): Loade
     ]);
   }
   if (!isProviderTable(parsed)) {
-    throw new GateError(2, "invalid_config", ["local provider table must be schemaVersion 1 with modelVersion and outputs"]);
+    throw new GateError(2, "invalid_config", [
+      "local provider table must be schemaVersion 1 with modelVersion and outputs",
+    ]);
   }
   if (parsed.modelVersion !== suite.manifest.candidateVersion) {
     throw new GateError(3, "quarantined", [
@@ -52,5 +54,10 @@ export function applyLocalProvider(suite: LoadedSuite, tablePath: string): Loade
 function isProviderTable(value: unknown): value is ProviderTable {
   if (value === null || typeof value !== "object") return false;
   const table = value as Partial<ProviderTable>;
-  return table.schemaVersion === "1" && typeof table.modelVersion === "string" && table.outputs !== null && typeof table.outputs === "object";
+  return (
+    table.schemaVersion === "1" &&
+    typeof table.modelVersion === "string" &&
+    table.outputs !== null &&
+    typeof table.outputs === "object"
+  );
 }

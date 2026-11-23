@@ -17,7 +17,11 @@ export type ContractResult = {
   failures: FieldResult[];
 };
 
-export function checkContract(schema: Record<string, unknown>, assertions: Assertion[], output: unknown): ContractResult {
+export function checkContract(
+  schema: Record<string, unknown>,
+  assertions: Assertion[],
+  output: unknown,
+): ContractResult {
   const shape = checkShape(schema, output);
   if (!shape.passed) return shape;
   const failures: FieldResult[] = [];
@@ -95,7 +99,12 @@ function expectedText(assertion: Assertion): string {
 function locate(value: unknown, dotted: string): { found: boolean; value: unknown } {
   let current = value;
   for (const part of dotted.split(".")) {
-    if (current === null || typeof current !== "object" || Array.isArray(current) || !Object.prototype.hasOwnProperty.call(current, part)) {
+    if (
+      current === null ||
+      typeof current !== "object" ||
+      Array.isArray(current) ||
+      !Object.prototype.hasOwnProperty.call(current, part)
+    ) {
       return { found: false, value: undefined };
     }
     current = (current as Record<string, unknown>)[part];

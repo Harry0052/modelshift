@@ -221,7 +221,9 @@ for (const [caseId, workflowId, baseline, bad, clean] of cases) {
 
 const { readFileSync } = await import("node:fs");
 function hash(relativePath) {
-  return createHash("sha256").update(readFileSync(path.join(root, relativePath))).digest("hex");
+  return createHash("sha256")
+    .update(readFileSync(path.join(root, relativePath)))
+    .digest("hex");
 }
 
 const orderAssertions = [
@@ -233,8 +235,22 @@ const orderAssertions = [
 ];
 
 const caseSpecs = [
-  ["order-extract", "order-desk", "critical", "inputs/order-extract.json", "schemas/order.schema.json", orderAssertions],
-  ["order-note-format", "order-desk", "low", "inputs/order-note-format.json", "schemas/order.schema.json", orderAssertions],
+  [
+    "order-extract",
+    "order-desk",
+    "critical",
+    "inputs/order-extract.json",
+    "schemas/order.schema.json",
+    orderAssertions,
+  ],
+  [
+    "order-note-format",
+    "order-desk",
+    "low",
+    "inputs/order-note-format.json",
+    "schemas/order.schema.json",
+    orderAssertions,
+  ],
   [
     "invoice-status",
     "billing",

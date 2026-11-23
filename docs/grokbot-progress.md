@@ -1,5 +1,18 @@
 # Grokbot progress
 
+## P05 — Verify correctness, security, and performance
+
+- **Phase and status:** P05 PASS
+- **Files changed:** `docs/validation.md`, `src/load.ts`, `test/boundaries.test.ts`, `package.json`, `package-lock.json`, `.prettierrc.json`, formatted `src/`, `test/`, and `scripts/`
+- **Commands and results:**
+  - `npm test` → 23 tests passed, including oversized input, depth, path escape, symlink refusal, report allowlist, timeout labeling, quarantine, and the one-second compare budget.
+  - `npm run typecheck` → pass. `npm run format:check` → pass. `npm audit` → 0 vulnerabilities.
+  - `npm run demo` → pass. Two blocked `gate.json` files were byte-identical. CLI wall time 120.4 ms. In-process samples: 33.16, 13.58, 12.69, 11.43, 10.79 ms. Budget is 1,000 ms.
+  - `/tmp/modelshift-pwned` was not created. Direct licenses: Ajv MIT, TypeScript Apache-2.0, Vitest MIT, Prettier MIT.
+- **Artifact paths:** `docs/validation.md`, `reports/candidate-bad/gate.json`, `reports/candidate-clean/gate.json`
+- **Open issues:** GitHub Actions is defined in P06 and verified on the hosted run in P07. The performance figure is one virtual machine, not a calibrated benchmark.
+- **Next phase:** P06 — prepare a reproducible open-source release.
+
 ## P04 — Ship the user workflow and reports
 
 - **Phase and status:** P04 PASS
