@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1",
+  "caseId": "refund-reason",
+  "workflowId": "billing",
+  "modelVersion": "recorded-baseline-1.0.0",
+  "status": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed"
+    }
+  ],
+  "output": {
+    "refund_id": "RF-100",
+    "reason": "misc",
+    "amount_cents": 500
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "name": "modelshift-order-desk-fixtures",
+  "version": "1.0.0",
+  "license": "MIT",
+  "licenseUrl": "https://opensource.org/license/mit",
+  "sourceUrl": "https://github.com/Harry0052/modelshift",
+  "attribution": "Original examples written for ModelShift. No production prompts and no provider captures.",
+  "generationSeed": null,
+  "generationMethod": "Hand-authored JSON written by scripts/author-fixtures.mjs. The local provider table repeats the clean candidate outputs. Expected gate results are calculated in fixtures/oracle/calculations.md.",
+  "runtimeNetwork": false,
+  "files": [
+    {
+      "path": "invalid/suite.manifest.json",
+      "sha256": "fe5869153f39c1e76bb8e21ce21958449d1029c5e9336ee79be37a1db4d285de"
+    },
+    {
+      "path": "oracle/calculations.md",
+      "sha256": "452e10f2a1f4b9d85f1da99e506cd6ef08dceafef46070b7f8dcfaa3707e9d6a"
+    },
+    {
+      "path": "valid/inputs/address-normalize.json",
+      "sha256": "a62e8a02d193a42142a96e391e8fc00f844eac8d5b84748086882d756b15fd2e"
+    },
+    {
+      "path": "valid/inputs/invoice-status.json",
+      "sha256": "7b7c69e619209f5a9a62c047e501f27237cc2bd85dc8cb7245b284a6f0018a53"
+    },
+    {
+      "path": "valid/inputs/order-extract.json",
+      "sha256": "71d99c07cfc78a70379fa0f65d2f91d5cb4d4b36d681253d411d2b7b090aa737"
+    },
+    {
+      "path": "valid/inputs/order-note-format.json",
+      "sha256": "41a7614c07d44f5a9abffa28960ac785b90539e8920a7c8a49d172df945fe033"
+    },
+    {
+      "path": "valid/inputs/refund-reason.json",
+      "sha256": "5d6171a9ab2a64d1740fbc29e95518e404256a19073d5e96405ec4a8885f16cf"
+    },
+    {
+      "path": "valid/inputs/shipment-window.json",
+      "sha256": "f46b71e12df25771adef9bcde05a3d141405d63297ec4445ac6dd966d16bc2a9"
+    },
+    {
+      "path": "valid/inputs/support-reply.json",
+      "sha256": "1e1137b462e3e85e654a0dd88dca05d07c374d952b2b16da794501e55a788a19"
+    },
+    {
+      "path": "valid/inputs/tax-total.json",
+      "sha256": "8fcd783846e0370df3ec57e201c55d6c11d9e7dd71c2459a0167cd440b0ea773"
+    },
+    {
+      "path": "valid/local-provider.json",
+      "sha256": "40b5db0ba5f98c369e3d63e30d6a11fb40b3b98e81c364650e68c2935c2b346b"
+    },
+    {
+      "path": "valid/recordings/baseline/address-normalize.json",
+      "sha256": "bd318e2df9c63a4d4644c89abc7c369faada544bd08c7ffae5554a7062b55991"
+    },
+    {
+      "path": "valid/recordings/baseline/invoice-status.json",
+      "sha256": "b6f1973f727015676d5ad8e4666b008f67ed9e819e7fa65e037e3f0fb53ce912"
+    },
+    {
+      "path": "valid/recordings/baseline/order-extract.json",
+      "sha256": "f9ed27d7d007fe23485ddfd2d5ee7db8910a405482018c02e8bfe7b6e9bbbd67"
+    },
+    {
+      "path": "valid/recordings/baseline/order-note-format.json",
+      "sha256": "d4eec8716b6d874c764b8d1471766904c5563d2c04b4dac1f355053d1043b7d9"
+    },
+    {
+      "path": "valid/recordings/baseline/refund-reason.json",
+      "sha256": "814c6f390bf77e09f2de79d91baf623ca754e130ac27868b674c777c52899817"
+    },
+    {
+      "path": "valid/recordings/baseline/shipment-window.json",
+      "sha256": "eea7ecffd2b33026134143179d78ed20944d4b63d4a59c89b44bfd11d93bdf73"
+    },
+    {
+      "path": "valid/recordings/baseline/support-reply.json",
+      "sha256": "43736cbd0d5138b955bc0f1798862e1ff03714804fbacdd829f8292ad50d6918"
+    },
+    {
+      "path": "valid/recordings/baseline/tax-total.json",
+      "sha256": "b57a094367140033c87a4699797de21189b5494ad9b8d2961a49f687a50496b5"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/address-normalize.json",
+      "sha256": "4f9b2bc0b94949ddde8ac9d5754a0c2ae0ae60a142dc74a7575ad98d81b54269"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/invoice-status.json",
+      "sha256": "e89fb5e4d295b08b50662ae000ad114cc7297ec188c779363328c0664d2c77db"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/order-extract.json",
+      "sha256": "204ae3118d7637199c3f65924885cf2da59af7bab9744aaafb57a06c49c188af"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/order-note-format.json",
+      "sha256": "e0869b13518f4c910f3c88d9f369a8234d88189f327fe070309312ed6456eeda"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/refund-reason.json",
+      "sha256": "0e133dc4d01dfed25bd73e18c9ce097fd76215e17b321a09ff4099af1c4fe332"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/shipment-window.json",
+      "sha256": "13dac5d8cc639e250a2e3d1aeba7e8eac05277cca3f6cebd775bba91d6fd4bc6"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/support-reply.json",
+      "sha256": "e4e5374cc0d2b91ccae3db186a7731b8c180c560942b26bec0e6ee4298fe30fb"
+    },
+    {
+      "path": "valid/recordings/candidate-bad/tax-total.json",
+      "sha256": "ee8f0fd57db061c26eea94aa20a123096d3cc55c4d5f70ef3e02bf9eb75454ce"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/address-normalize.json",
+      "sha256": "4f9b2bc0b94949ddde8ac9d5754a0c2ae0ae60a142dc74a7575ad98d81b54269"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/invoice-status.json",
+      "sha256": "d8ad2428ab8dee822dfdfb1b811a500f744ed368b1c5f47c41ec25f2fe6ee272"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/order-extract.json",
+      "sha256": "de91dd1eb32f9e2d1410f6725fd968e475507eeb0aa71ce1620595f4e72651c6"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/order-note-format.json",
+      "sha256": "e0869b13518f4c910f3c88d9f369a8234d88189f327fe070309312ed6456eeda"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/refund-reason.json",
+      "sha256": "0e133dc4d01dfed25bd73e18c9ce097fd76215e17b321a09ff4099af1c4fe332"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/shipment-window.json",
+      "sha256": "13dac5d8cc639e250a2e3d1aeba7e8eac05277cca3f6cebd775bba91d6fd4bc6"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/support-reply.json",
+      "sha256": "e4e5374cc0d2b91ccae3db186a7731b8c180c560942b26bec0e6ee4298fe30fb"
+    },
+    {
+      "path": "valid/recordings/candidate-clean/tax-total.json",
+      "sha256": "ee8f0fd57db061c26eea94aa20a123096d3cc55c4d5f70ef3e02bf9eb75454ce"
+    },
+    {
+      "path": "valid/schemas/address.schema.json",
+      "sha256": "5d0dcd9be61070cc794624c568e4cb9db30ea42336b3697a3db1be355980d14b"
+    },
+    {
+      "path": "valid/schemas/invoice.schema.json",
+      "sha256": "7efed1e88587a6abbf157ee35a9ce346ca05143208f30d33b888b82ff5dd09ee"
+    },
+    {
+      "path": "valid/schemas/order.schema.json",
+      "sha256": "2aa1df8d20b5cfbf36ec6da62651f0deb255927ea98be7faa1c331849d6dcb92"
+    },
+    {
+      "path": "valid/schemas/refund.schema.json",
+      "sha256": "9b667ef3766d3e63ffcfceae23a886367f6177057a15673867e2f161a799c45e"
+    },
+    {
+      "path": "valid/schemas/shipment.schema.json",
+      "sha256": "ab47564b57323a2fb18ea6a68b85aa59623f14b499e94cdd96364c0eb7e2e391"
+    },
+    {
+      "path": "valid/schemas/support.schema.json",
+      "sha256": "ec9fb02348c1aaad8b20765554aa1f1a566e0bf1c056c338c0480566ec1a7990"
+    },
+    {
+      "path": "valid/schemas/tax.schema.json",
+      "sha256": "141f849f3e844fadff531743dc63d367d908423f0bf2b543a94588c5e8b4a495"
+    },
+    {
+      "path": "valid/suite.manifest.json",
+      "sha256": "0804bad8c1af17eb66e3a581ec229bfd954773e2b5b77099b5e35bc2ed5edf29"
+    }
+  ]
+}

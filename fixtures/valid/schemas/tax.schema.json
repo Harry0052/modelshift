@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tax_cents",
+    "currency"
+  ],
+  "properties": {
+    "tax_cents": {
+      "type": "integer"
+    },
+    "currency": {
+      "type": "string",
+      "maxLength": 8
+    }
+  }
+}

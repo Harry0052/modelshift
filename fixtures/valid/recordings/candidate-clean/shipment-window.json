@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1",
+  "caseId": "shipment-window",
+  "workflowId": "shipping",
+  "modelVersion": "recorded-candidate-1.1.0",
+  "status": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed"
+    }
+  ],
+  "output": {
+    "carrier": "ground",
+    "days": 3
+  }
+}

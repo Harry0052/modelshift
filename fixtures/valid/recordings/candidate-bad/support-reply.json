@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1",
+  "caseId": "support-reply",
+  "workflowId": "support",
+  "modelVersion": "recorded-candidate-1.1.0",
+  "status": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed"
+    }
+  ],
+  "output": {
+    "ticket_id": "TCK-1001",
+    "body": "Status for TCK-1001. <script>alert(1)</script> touch /tmp/modelshift-pwned"
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1",
+  "suiteId": "order-desk-release",
+  "baselineVersion": "recorded-baseline-1.0.0",
+  "candidateVersion": "recorded-candidate-1.1.0",
+  "retries": 1,
+  "redactions": [
+    "customer.email"
+  ],
+  "baselineDir": "recordings/baseline",
+  "candidateDir": "recordings/candidate-bad",
+  "cases": [
+    {
+      "caseId": "order-extract",
+      "workflowId": "order-desk",
+      "severity": "critical",
+      "input": "inputs/order-extract.json",
+      "outputSchema": "schemas/order.schema.json",
+      "recording": "order-extract.json",
+      "inputSha256": "71d99c07cfc78a70379fa0f65d2f91d5cb4d4b36d681253d411d2b7b090aa737",
+      "assertions": [
+        {
+          "path": "order_id",
+          "type": "pattern",
+          "pattern": "^ORD-[0-9]{4}$"
+        },
+        {
+          "path": "item_count",
+          "type": "exact",
+          "value": 2
+        },
+        {
+          "path": "total_cents",
+          "type": "exact",
+          "value": 1900
+        },
+        {
+          "path": "currency",
+          "type": "enum",
+          "values": [
+            "USD"
+          ]
+        },
+        {
+          "path": "note",
+          "type": "maxLength",
+          "max": 200
+        }
+      ]
+    },
+    {
+      "caseId": "order-note-format",
+      "workflowId": "order-desk",
+      "severity": "low",
+      "input": "inputs/order-note-format.json",
+      "outputSchema": "schemas/order.schema.json",
+      "recording": "order-note-format.json",
+      "inputSha256": "41a7614c07d44f5a9abffa28960ac785b90539e8920a7c8a49d172df945fe033",
+      "assertions": [
+        {
+          "path": "order_id",
+          "type": "pattern",
+          "pattern": "^ORD-[0-9]{4}$"
+        },
+        {
+          "path": "item_count",
+          "type": "exact",
+          "value": 2
+        },
+        {
+          "path": "total_cents",
+          "type": "exact",
+          "value": 1900
+        },
+        {
+          "path": "currency",
+          "type": "enum",
+          "values": [
+            "USD"
+          ]
+        },
+        {
+          "path": "note",
+          "type": "maxLength",
+          "max": 200
+        }
+      ]
+    },
+    {
+      "caseId": "invoice-status",
+      "workflowId": "billing",
+      "severity": "low",
+      "input": "inputs/invoice-status.json",
+      "outputSchema": "schemas/invoice.schema.json",
+      "recording": "invoice-status.json",
+      "inputSha256": "7b7c69e619209f5a9a62c047e501f27237cc2bd85dc8cb7245b284a6f0018a53",
+      "assertions": [
+        {
+          "path": "invoice_id",
+          "type": "pattern",
+          "pattern": "^INV-[0-9]{1,6}$"
+        },
+        {
+          "path": "status",
+          "type": "enum",
+          "values": [
+            "open",
+            "paid",
+            "void"
+          ]
+        },
+        {
+          "path": "total_cents",
+          "type": "exact",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "caseId": "address-normalize",
+      "workflowId": "shipping",
+      "severity": "low",
+      "input": "inputs/address-normalize.json",
+      "outputSchema": "schemas/address.schema.json",
+      "recording": "address-normalize.json",
+      "inputSha256": "a62e8a02d193a42142a96e391e8fc00f844eac8d5b84748086882d756b15fd2e",
+      "assertions": [
+        {
+          "path": "region",
+          "type": "enum",
+          "values": [
+            "CA",
+            "NY",
+            "TX"
+          ]
+        },
+        {
+          "path": "postal",
+          "type": "pattern",
+          "pattern": "^[0-9]{5}$"
+        }
+      ]
+    },
+    {
+      "caseId": "refund-reason",
+      "workflowId": "billing",
+      "severity": "medium",
+      "input": "inputs/refund-reason.json",
+      "outputSchema": "schemas/refund.schema.json",
+      "recording": "refund-reason.json",
+      "inputSha256": "5d6171a9ab2a64d1740fbc29e95518e404256a19073d5e96405ec4a8885f16cf",
+      "assertions": [
+        {
+          "path": "refund_id",
+          "type": "pattern",
+          "pattern": "^RF-[0-9]{3}$"
+        },
+        {
+          "path": "reason",
+          "type": "enum",
+          "values": [
+            "duplicate",
+            "damaged",
+            "late"
+          ]
+        },
+        {
+          "path": "amount_cents",
+          "type": "exact",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "caseId": "shipment-window",
+      "workflowId": "shipping",
+      "severity": "low",
+      "input": "inputs/shipment-window.json",
+      "outputSchema": "schemas/shipment.schema.json",
+      "recording": "shipment-window.json",
+      "inputSha256": "f46b71e12df25771adef9bcde05a3d141405d63297ec4445ac6dd966d16bc2a9",
+      "assertions": [
+        {
+          "path": "carrier",
+          "type": "enum",
+          "values": [
+            "ground",
+            "air"
+          ]
+        },
+        {
+          "path": "days",
+          "type": "exact",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "caseId": "tax-total",
+      "workflowId": "billing",
+      "severity": "critical",
+      "input": "inputs/tax-total.json",
+      "outputSchema": "schemas/tax.schema.json",
+      "recording": "tax-total.json",
+      "inputSha256": "8fcd783846e0370df3ec57e201c55d6c11d9e7dd71c2459a0167cd440b0ea773",
+      "assertions": [
+        {
+          "path": "tax_cents",
+          "type": "exact",
+          "value": 152
+        },
+        {
+          "path": "currency",
+          "type": "enum",
+          "values": [
+            "USD"
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "support-reply",
+      "workflowId": "support",
+      "severity": "low",
+      "input": "inputs/support-reply.json",
+      "outputSchema": "schemas/support.schema.json",
+      "recording": "support-reply.json",
+      "inputSha256": "1e1137b462e3e85e654a0dd88dca05d07c374d952b2b16da794501e55a788a19",
+      "assertions": [
+        {
+          "path": "ticket_id",
+          "type": "pattern",
+          "pattern": "^TCK-[0-9]{4}$"
+        },
+        {
+          "path": "body",
+          "type": "maxLength",
+          "max": 500
+        }
+      ]
+    }
+  ]
+}

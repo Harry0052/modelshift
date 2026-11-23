@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "suiteId": "broken-suite",
+  "candidateVersion": "recorded-candidate-1.1.0",
+  "retries": 1,
+  "redactions": [],
+  "baselineDir": "recordings/baseline",
+  "candidateDir": "recordings/candidate-bad",
+  "cases": [
+    {
+      "caseId": "order-extract",
+      "workflowId": "order-desk",
+      "severity": "urgent",
+      "input": "inputs/order-extract.json",
+      "outputSchema": "schemas/order.schema.json",
+      "recording": "order-extract.json",
+      "assertions": []
+    }
+  ]
+}

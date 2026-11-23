@@ -1,0 +1,42 @@
+{
+  "name": "modelshift",
+  "version": "0.1.0",
+  "description": "Offline release gate that compares a candidate model with a pinned baseline on exact workflow contracts.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "modelshift": "./dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "fixtures",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && vitest run",
+    "validate": "npm run build && node dist/cli.js validate --manifest fixtures/valid/suite.manifest.json",
+    "validate:invalid": "npm run build && node dist/cli.js validate --manifest fixtures/invalid/suite.manifest.json",
+    "demo": "npm run build && node scripts/demo.mjs",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.mjs\""
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.7",
+    "prettier": "3.10.1",
+    "typescript": "5.9.3",
+    "vitest": "5.1.1"
+  }
+}

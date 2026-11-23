@@ -1,0 +1,5 @@
+{
+  "request": "Read invoice INV-9.",
+  "invoiceId": "INV-9",
+  "totalCents": 500
+}

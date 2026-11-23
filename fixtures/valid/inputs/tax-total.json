@@ -1,0 +1,5 @@
+{
+  "request": "Compute 8 percent tax on 1900 cents.",
+  "taxableCents": 1900,
+  "taxRatePerThousand": 80
+}

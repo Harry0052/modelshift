@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1",
+  "caseId": "invoice-status",
+  "workflowId": "billing",
+  "modelVersion": "recorded-candidate-1.1.0",
+  "status": "timeout",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "timeout"
+    },
+    {
+      "attempt": 2,
+      "status": "timeout"
+    }
+  ]
+}

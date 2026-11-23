@@ -1,0 +1,6 @@
+{
+  "request": "Extract the order and keep the packing note.",
+  "unitPriceCents": 950,
+  "itemCount": 2,
+  "note": "Rush order"
+}
