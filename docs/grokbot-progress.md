@@ -1,5 +1,20 @@
 # Grokbot progress
 
+## P07 — Publish and verify on GitHub
+
+- **Phase and status:** P07 PASS
+- **Files changed:** `docs/grokbot-progress.md`
+- **Commands and results:**
+  - Destination checked before publish: `https://github.com/Harry0052/modelshift`, visibility PUBLIC, license MIT, default branch `main`. The origin remote is that repository. The authenticated user endpoint returned 403 for this token; publish used the repository remote the owner authorized.
+  - Pull request: https://github.com/Harry0052/modelshift/pull/1
+  - GitHub Actions run https://github.com/Harry0052/modelshift/actions/runs/45111911168 concluded `success` on head `10b2aa842dd25b28170bbebc8fe7ef1be890b0eb`. Formatting, typecheck, tests, demo, and report upload passed.
+  - Annotated tag `v0.1.0` points at that commit. Release: https://github.com/Harry0052/modelshift/releases/tag/v0.1.0 with asset `modelshift-0.1.0.tgz`.
+  - A fresh clone of `v0.1.0` ran `npm ci` and `npm run demo`. The seeded candidate decision was `block` on `order_id`. The corrected candidate decision was `pass`.
+  - `main` was not merged.
+- **Artifact paths:** https://github.com/Harry0052/modelshift/releases/tag/v0.1.0
+- **Open issues:** None. The owner merges the pull request.
+- **Next phase:** None. This is the last phase.
+
 ## P06 — Prepare a reproducible open-source release
 
 - **Phase and status:** P06 PASS
