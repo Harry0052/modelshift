@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "carrier",
+    "days"
+  ],
+  "properties": {
+    "carrier": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "days": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

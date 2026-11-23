@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1",
+  "caseId": "tax-total",
+  "workflowId": "billing",
+  "modelVersion": "recorded-candidate-1.1.0",
+  "status": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed"
+    }
+  ],
+  "output": {
+    "tax_cents": 152,
+    "currency": "USD"
+  }
+}

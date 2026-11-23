@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "refund_id",
+    "reason",
+    "amount_cents"
+  ],
+  "properties": {
+    "refund_id": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "amount_cents": {
+      "type": "integer"
+    }
+  }
+}

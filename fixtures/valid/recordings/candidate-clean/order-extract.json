@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1",
+  "caseId": "order-extract",
+  "workflowId": "order-desk",
+  "modelVersion": "recorded-candidate-1.1.0",
+  "status": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed"
+    }
+  ],
+  "output": {
+    "order_id": "ORD-1042",
+    "item_count": 2,
+    "total_cents": 1900,
+    "currency": "USD",
+    "note": "ok",
+    "customer": {
+      "email": "ada@example.com"
+    }
+  }
+}

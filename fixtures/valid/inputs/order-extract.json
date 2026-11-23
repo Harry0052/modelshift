@@ -1,0 +1,5 @@
+{
+  "request": "Extract the order. 2 widgets at 9.50 USD each.",
+  "unitPriceCents": 950,
+  "itemCount": 2
+}

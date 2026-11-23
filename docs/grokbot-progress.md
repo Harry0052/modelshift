@@ -1,5 +1,32 @@
 # Grokbot progress
 
+## P03 — Build the working core
+
+- **Phase and status:** P03 PASS
+- **Files changed:** `src/assertions.ts`, `src/evaluate.ts`, `src/report.ts`, `src/redact.ts`, `src/local-provider.ts`, `src/version.ts`, `src/cli.ts`, `src/load.ts`, `src/index.ts`, `test/compare.test.ts`, `fixtures/valid/local-provider.json`, `fixtures/FIXTURE-MANIFEST.json`, `README.md`
+- **Commands and results:**
+  - `npm test` → 16 tests passed.
+  - `node dist/cli.js compare --manifest fixtures/valid/suite.manifest.json --out reports/candidate-bad` → exit 1. Decision `block`. One critical regression, `order-desk/order-extract` field `order_id` (`1042` vs `^ORD-[0-9]{4}$`). Counts: passing 4, newly failing 1, fixed 1, continuously failing 1, inconclusive 1. Invoice timeout shows 2 attempts and retries configured 1. Refund is `fixed`. Address is `continuously_failing`. Note spacing stays `passing`.
+  - `node dist/cli.js compare --manifest fixtures/valid/suite.manifest.json --candidate-dir recordings/candidate-clean --out reports/candidate-clean` → exit 0. Decision `pass`. Critical regressions 0. Both critical cases passing. Counts: passing 6, fixed 1, continuously failing 1.
+  - A second compare of the blocked suite produced the same JSON bytes (covered by `repeats the same gate bytes`).
+- **Artifact paths:** `reports/candidate-bad/gate.json`, `reports/candidate-bad/summary.txt`, `reports/candidate-bad/gate.html`, `reports/candidate-clean/gate.json`, `fixtures/oracle/calculations.md`
+- **Open issues:** The README demo is present, and the user-facing recovery text and CI summary are still thin for P04.
+- **Next phase:** P04 — ship the user workflow and reports.
+
+## P02 — Create the repository and data contracts
+
+- **Phase and status:** P02 PASS
+- **Files changed:** `package.json`, `package-lock.json`, `tsconfig.json`, `vitest.config.ts`, `.gitignore`, `README.md`, `src/**`, `test/validate.test.ts`, `scripts/author-fixtures.mjs`, `fixtures/**`
+- **Commands and results:**
+  - `npm install` then `npm audit` → 0 vulnerabilities (Ajv 8.20.0, TypeScript 5.9.3, Vitest 5.1.1).
+  - `npm test` → build succeeded, 6 tests passed.
+  - `node dist/cli.js validate --manifest fixtures/valid/suite.manifest.json` → exit 0, `valid suite order-desk-release`, `cases: 8`, baseline `recorded-baseline-1.0.0`, candidate `recorded-candidate-1.1.0`, `retries: 1`.
+  - Same command with `--candidate-dir recordings/candidate-clean` → exit 0, 8 cases.
+  - `node dist/cli.js validate --manifest fixtures/invalid/suite.manifest.json` → exit 2. Stderr named the missing `baselineVersion`, the missing `inputSha256`, the rejected severity, and the empty assertions array.
+- **Artifact paths:** `fixtures/valid/suite.manifest.json`, `fixtures/invalid/suite.manifest.json`, `fixtures/oracle/calculations.md`, `fixtures/FIXTURE-MANIFEST.json`
+- **Open issues:** Compare and the release decision are not implemented yet. The oracle in `fixtures/oracle/calculations.md` is the hand calculation the core must match.
+- **Next phase:** P03 — build the working core.
+
 ## P01 — Research overlap and confirm the MVP
 
 - **Phase and status:** P01 PASS
